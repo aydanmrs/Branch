@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.example.branchapp.databinding.ActivityTicTacToeBinding
+import com.example.branchapp.databinding.DialogExitGameBinding
 import com.example.branchapp.databinding.DialogWinnerBinding
 
 class TicTacToeActivity : AppCompatActivity() {
@@ -37,10 +38,7 @@ class TicTacToeActivity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, StartActivity1::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            finish()
+            showExitConfirmationDialog()
         }
     }
 
@@ -177,5 +175,24 @@ class TicTacToeActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finish()
+    }
+    private fun showExitConfirmationDialog() {
+        val dialog = Dialog(this)
+        val dialogBinding = DialogExitGameBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogBinding.buttonYes.setOnClickListener {
+            dialog.dismiss()
+            quitGame()
+        }
+
+        dialogBinding.buttonNo.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.show()
     }
 }
