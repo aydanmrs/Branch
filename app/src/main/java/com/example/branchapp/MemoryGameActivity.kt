@@ -18,6 +18,9 @@ class MemoryGameActivity : AppCompatActivity() {
     private var firstCard: Card? = null
     private var secondCard: Card? = null
     private var isGameFinished = false
+    private var handler = Handler(Looper.getMainLooper())
+    private var timerRunnable: Runnable? = null
+    private var remainingTime = 90
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,5 +101,27 @@ class MemoryGameActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }, 1000)
         }
+    }
+
+    private fun startTimer() {
+        timerRunnable?.let { handler.removeCallbacks(it) }
+
+        timerRunnable = object : Runnable {
+            override fun run() {
+                remainingTime--
+                updateTimerUI()
+                if (remainingTime > 0) {
+                    handler.postDelayed(this, 1000)
+                } else {
+                    if (!isGameFinished) {
+                    }
+                }
+            }
+        }
+        handler.post(timerRunnable!!)
+    }
+
+    private fun updateTimerUI() {
+        binding.timerTextView.text = String.format("%02d:%02d", remainingTime / 60, remainingTime % 60)
     }
 }
