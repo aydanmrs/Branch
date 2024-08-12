@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.branchapp.databinding.ActivityMemoryGameBinding
+import com.example.branchapp.databinding.DialogExitGameBinding
 import com.example.branchapp.databinding.DialogGameOverBinding
 import com.example.branchapp.databinding.DialogUndoBinding
 
@@ -38,10 +40,7 @@ class MemoryGameActivity : AppCompatActivity() {
         }
 
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, StartActivity2::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            finish()
+            showExitDialog()
         }
 
         binding.undoButton.setOnClickListener {
@@ -61,7 +60,7 @@ class MemoryGameActivity : AppCompatActivity() {
     private fun setupCards() {
         val images = listOf(
             R.drawable.bear,
-            R.drawable.bee,
+            R.drawable.fox,
             R.drawable.dog,
             R.drawable.cat,
             R.drawable.elephant,
@@ -193,7 +192,7 @@ class MemoryGameActivity : AppCompatActivity() {
     }
 
     private fun quitGame() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, StartActivity2::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finish()
@@ -233,5 +232,29 @@ class MemoryGameActivity : AppCompatActivity() {
         binding.undoButton.visibility = View.VISIBLE
         binding.pauseButton.visibility = View.INVISIBLE
         isPaused = false
+    }
+    private fun showExitDialog() {
+        timerRunnable?.let { handler.removeCallbacks(it) }
+        isPaused = true
+
+        val dialogBinding = DialogExitGameBinding.inflate(LayoutInflater.from(this))
+        val exitDialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        exitDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogBinding.btnYes.setOnClickListener {
+            exitDialog.dismiss()
+            quitGame()
+        }
+
+        dialogBinding.btnNo.setOnClickListener {
+            exitDialog.dismiss()
+            resumeGame()
+        }
+
+        exitDialog.show()
     }
 }
