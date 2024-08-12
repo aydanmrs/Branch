@@ -113,6 +113,10 @@ class TicTacToeActivity : AppCompatActivity() {
             dialog.dismiss()
             resetBoard()
         }
+        dialogBinding.buttonQuit.setOnClickListener {
+            dialog.dismiss()
+            quitGame()
+        }
         dialog.setCanceledOnTouchOutside(false)
         dialog.show()
     }
@@ -166,5 +170,12 @@ class TicTacToeActivity : AppCompatActivity() {
         }
 
         currentPlayer = lastStartingPlayer
+    }
+
+    private fun quitGame() {
+        val intent = Intent(this, StartActivity1::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
     }
 }
