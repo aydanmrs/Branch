@@ -24,7 +24,7 @@ class MemoryGameActivity : AppCompatActivity() {
     private var isGameFinished = false
     private var handler = Handler(Looper.getMainLooper())
     private var timerRunnable: Runnable? = null
-    private var remainingTime = 90
+    private var remainingTime = 60
     private var isPaused = false
 
 
@@ -180,7 +180,7 @@ class MemoryGameActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
 
         if (resetTime) {
-            remainingTime = 90
+            remainingTime = 60
             startTimer()
         } else {
             updateTimerUI()
