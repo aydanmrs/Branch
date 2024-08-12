@@ -27,10 +27,13 @@ class TicTacToeActivity : AppCompatActivity() {
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             window.statusBarColor = Color.TRANSPARENT
-
         }
 
         initializeBoard()
+
+        binding.undo.setOnClickListener {
+            resetBoard()
+        }
     }
 
     @SuppressLint("ResourceType")
@@ -100,6 +103,7 @@ class TicTacToeActivity : AppCompatActivity() {
         dialogBinding.textViewWinner.text = message
         dialogBinding.buttonReturn.setOnClickListener {
             dialog.dismiss()
+            resetBoard()
         }
         dialog.setCanceledOnTouchOutside(false)
         dialog.show()
@@ -133,5 +137,26 @@ class TicTacToeActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+    private fun resetBoard() {
+        for (i in 0..2) {
+            for (j in 0..2) {
+                board[i][j] = null
+            }
+        }
+
+        val buttons = arrayOf(
+            arrayOf(binding.button1, binding.button2, binding.button3),
+            arrayOf(binding.button4, binding.button5, binding.button6),
+            arrayOf(binding.button7, binding.button8, binding.button9)
+        )
+
+        for (i in 0..2) {
+            for (j in 0..2) {
+                buttons[i][j].text = ""
+            }
+        }
+
+        currentPlayer = lastStartingPlayer
     }
 }
