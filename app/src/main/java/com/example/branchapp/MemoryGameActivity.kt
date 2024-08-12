@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.branchapp.databinding.ActivityMemoryGameBinding
 import com.example.branchapp.databinding.DialogGameOverBinding
+import com.example.branchapp.databinding.DialogUndoBinding
 
 class MemoryGameActivity : AppCompatActivity() {
 
@@ -42,6 +43,15 @@ class MemoryGameActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        binding.undoButton.setOnClickListener {
+            if (isPaused) {
+                resumeGame()
+            } else {
+                showUndoDialog()
+            }
+        }
+
         setupCards()
         setupRecyclerView()
         startTimer()
@@ -187,5 +197,41 @@ class MemoryGameActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finish()
+    }
+
+    private fun showUndoDialog() {
+        timerRunnable?.let { handler.removeCallbacks(it) }
+        isPaused = true
+
+        val dialogBinding = DialogUndoBinding.inflate(layoutInflater)
+        val undoDialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        undoDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+
+        dialogBinding.btnYes.setOnClickListener {
+            undoDialog.dismiss()
+            restartGame(resetTime = true)
+        }
+
+        dialogBinding.btnNo.setOnClickListener {
+            undoDialog.dismiss()
+            resumeGame()
+        }
+
+        undoDialog.show()
+
+        binding.undoButton.visibility = View.INVISIBLE
+        binding.pauseButton.visibility = View.VISIBLE
+    }
+
+    private fun resumeGame() {
+        startTimer()
+        binding.undoButton.visibility = View.VISIBLE
+        binding.pauseButton.visibility = View.INVISIBLE
+        isPaused = false
     }
 }
