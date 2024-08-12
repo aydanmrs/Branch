@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.branchapp.databinding.ActivityMemoryGameBinding
+import com.example.branchapp.databinding.DialogGameOverBinding
 
 class MemoryGameActivity : AppCompatActivity() {
 
@@ -21,6 +24,8 @@ class MemoryGameActivity : AppCompatActivity() {
     private var handler = Handler(Looper.getMainLooper())
     private var timerRunnable: Runnable? = null
     private var remainingTime = 90
+    private var isPaused = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +43,8 @@ class MemoryGameActivity : AppCompatActivity() {
             finish()
         }
         setupCards()
+        setupRecyclerView()
+        startTimer()
 
     }
 
@@ -88,6 +95,7 @@ class MemoryGameActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
 
         if (cards.all { it.isMatched }) {
+            endGame(true)
         }
     }
     private fun checkForMatch(card1: Card, card2: Card) {
@@ -114,6 +122,7 @@ class MemoryGameActivity : AppCompatActivity() {
                     handler.postDelayed(this, 1000)
                 } else {
                     if (!isGameFinished) {
+                        endGame(false)
                     }
                 }
             }
@@ -123,5 +132,60 @@ class MemoryGameActivity : AppCompatActivity() {
 
     private fun updateTimerUI() {
         binding.timerTextView.text = String.format("%02d:%02d", remainingTime / 60, remainingTime % 60)
+    }
+
+    private fun endGame(isWin: Boolean) {
+        isGameFinished = true
+        timerRunnable?.let { handler.removeCallbacks(it) }
+
+        val dialogBinding = DialogGameOverBinding.inflate(layoutInflater)
+        val message = if (isWin) "You won the game!" else "You lost the game!"
+        dialogBinding.messageTextView.text = message
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogBinding.restartButton.setOnClickListener {
+            dialog.dismiss()
+            restartGame(resetTime = true)
+        }
+
+        dialogBinding.quitButton.setOnClickListener {
+            dialog.dismiss()
+            quitGame()
+        }
+
+        dialog.show()
+    }
+    private fun restartGame(resetTime: Boolean) {
+        cards.forEach { card ->
+            card.isFaceUp = false
+            card.isMatched = false
+        }
+        cards.shuffle()
+        adapter.notifyDataSetChanged()
+
+        if (resetTime) {
+            remainingTime = 90
+            startTimer()
+        } else {
+            updateTimerUI()
+        }
+
+        isGameFinished = false
+        binding.undoButton.visibility = View.VISIBLE
+        binding.pauseButton.visibility = View.INVISIBLE
+        isPaused = false
+    }
+
+    private fun quitGame() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
     }
 }
