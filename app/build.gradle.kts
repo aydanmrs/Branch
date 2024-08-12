@@ -7,6 +7,10 @@ android {
     namespace = "com.example.branchapp"
     compileSdk = 34
 
+    buildFeatures{
+        viewBinding=true
+    }
+
     defaultConfig {
         applicationId = "com.example.branchapp"
         minSdk = 24
