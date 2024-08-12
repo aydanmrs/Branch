@@ -3,5 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main_bg">#efeee9</color>
+    <color name="mainactivity_bg">#dfdefe</color>
 
 </resources>
