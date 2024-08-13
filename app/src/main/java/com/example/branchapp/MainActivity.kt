@@ -23,5 +23,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, StartActivity2::class.java)
             startActivity(intent)
         }
+
+        binding.ticTacToe.setOnClickListener {
+            val intent = Intent(this@MainActivity, StartActivity1::class.java)
+            startActivity(intent)
+        }
     }
 }
