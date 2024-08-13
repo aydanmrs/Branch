@@ -5,28 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.branchapp.databinding.ItemCardBinding
 
-class CardAdapter(
-    private val cards: List<Card>,
-    private val onCardClick: (Card) -> Unit
-) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
+class CardAdapter(val cardList: List<Card>, val onCardClick: (Card) -> Unit) : RecyclerView.Adapter<CardAdapter.CardHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
-        val binding = ItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CardViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.bind(cards[position])
-    }
-
-    override fun getItemCount(): Int = cards.size
-
-    inner class CardViewHolder(private val binding: ItemCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(card: Card) {
+    class CardHolder(val binding: ItemCardBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(card: Card, onCardClick: (Card) -> Unit) {
             binding.imageView.setImageResource(if (card.isFaceUp) card.image else R.drawable.background)
             binding.root.setOnClickListener {
                 onCardClick(card)
             }
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardHolder {
+        val binding = ItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return CardHolder(binding)
+    }
+
+    override fun getItemCount(): Int = cardList.size
+
+    override fun onBindViewHolder(holder: CardHolder, position: Int) {
+        holder.bind(cardList[position], onCardClick)
     }
 }
