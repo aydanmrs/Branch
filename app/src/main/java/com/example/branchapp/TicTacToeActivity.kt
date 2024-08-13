@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import com.example.branchapp.databinding.ActivityTicTacToeBinding
-import com.example.branchapp.databinding.DialogExitGameBinding
+import com.example.branchapp.databinding.DialogExitGameTictactoeBinding
 import com.example.branchapp.databinding.DialogWinnerBinding
 
 class TicTacToeActivity : AppCompatActivity() {
@@ -178,7 +178,7 @@ class TicTacToeActivity : AppCompatActivity() {
     }
     private fun showExitConfirmationDialog() {
         val dialog = Dialog(this)
-        val dialogBinding = DialogExitGameBinding.inflate(layoutInflater)
+        val dialogBinding = DialogExitGameTictactoeBinding.inflate(layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
